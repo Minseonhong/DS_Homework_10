@@ -40,18 +40,16 @@ int freeBST(Node* head); /* free all memories allocated to the tree */
 /* you may add your own defined functions if necessary */
 
 
-void printStack();
-
 
 
 int main()
 {
 	printf("----- [민선홍] [2018038028] -----");
-	char command;
-	int key;
-	Node* head = NULL;
+	char command; // 문자형 변수 command 생성
+	int key; // 정수형 변수 key 생성
+	Node* head = NULL; // Node형의 포인터 변수 head 생성한 뒤, NULL로 초기화
 
-	do{
+	do{ // 반복문 실행
 		printf("\n\n");
 		printf("----------------------------------------------------------------\n");
 		printf("                   Binary Search Tree #2                        \n");
@@ -97,10 +95,6 @@ int main()
 			levelOrder(head->left);
 			break;
 
-		case 'p': case 'P':
-			printStack();
-			break;
-
 		default:
 			printf("\n       >>>>>   Concentration!!   <<<<<     \n");
 			break;
@@ -132,7 +126,7 @@ int initializeBST(Node** h) {
 
 
 
-void recursiveInorder(Node* ptr)
+void recursiveInorder(Node* ptr) // 재귀함수를이용하여 중위순회 출력
 {
 	if(ptr) {
 		recursiveInorder(ptr->left);
@@ -144,15 +138,45 @@ void recursiveInorder(Node* ptr)
 /**
  * textbook: p 224s
  */
-void iterativeInorder(Node* node)
+void iterativeInorder(Node* node) // 반복적 중위 순회 함수
 {
+	int top= 1;
+	Node stack[MAX_STACK_SIZE];
+	for(;;)
+	{
+		for(; node; node = node -> left)
+		{
+			push(node);
+		}
+		node = pop();
+
+		if(!node) break;
+		{
+			printf("%d", node -> key);
+			node = node -> right;
+		}
+	}
+
 }
 
 /**
  * textbook: p 225
  */
-void levelOrder(Node* ptr)
+void levelOrder(Node* ptr) // 레벨 순서 트리 순회 함수
 {
+	int front = rear = 0;
+	Node queue[MAX_QUEUE_SIZE];
+
+	if(!ptr)
+	{
+		return;
+	}
+	enqueue(ptr);
+
+	for(;;)
+	{
+		ptr =
+	}
 }
 
 
@@ -202,6 +226,85 @@ int insert(Node* head, int key)
 
 int deleteNode(Node* head, int key)
 {
+	Node* parent = NULL;
+	Node* node = head -> left;
+	Node* child;
+	Node* del;
+	Node* del2;
+
+	if(node == head)
+	{
+		printf("키가 존재하지않습니다\n");
+		return 1;
+	}
+
+	while(node -> key != key)
+	{
+		parent = node;
+
+		if(node -> key > key)
+		{
+			node = node -> left;
+		}
+		else
+			node = node -> right;
+	}
+
+	if(node -> left == NULL && node -> right == NULL)
+	{
+		if(parent)
+		{
+			if(parent -> left == node)
+			{
+				parent -> left = NULL;
+			}
+			else
+			{
+				parent -> right = NULL;
+			}
+		}
+		else
+			head -> left = head;
+	}
+	else if (node -> left == NULL || node -> right == NULL)
+	{
+		child = (node -> left != NULL) ? node -> left : node -> right;
+
+		if(parent)
+		{
+			if(parent -> left == node)
+			{
+				parent -> left == child;
+			}
+			else
+			{
+				parent -> right = child;
+			}
+		}
+	}
+	else
+	{
+		del2 = node;
+		del = node -> right;
+
+		while(del -> left != NULL)
+		{
+			del2 = del;
+			del = del -> left;
+		}
+		if(del2 -> left == del)
+		{
+			del2 -> left = del -> right;
+		}
+		else
+		{
+			del2 -> right = del -> right;
+		}
+		node -> key = del -> key;
+		node = del;
+	}
+	free(node);
+	return 1;
 }
 
 
