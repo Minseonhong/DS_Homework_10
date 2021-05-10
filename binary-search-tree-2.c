@@ -171,11 +171,24 @@ void levelOrder(Node* ptr) // 레벨 순서 트리 순회 함수
 	{
 		return;
 	}
-	enqueue(ptr);
+	enQueue(&front, rear);
 
 	for(;;)
 	{
-		ptr =
+		ptr = deQueue(&front, rear);
+		if(ptr)
+		{
+			printf("%d", ptr->key);
+			if(ptr -> left)
+			{
+				enQueue(front, &rear, ptr -> left);
+			}
+			if(ptr -> right)
+			{
+				addq(front, &rear, ptr -> right);
+			}
+		}
+		else break;
 	}
 }
 
