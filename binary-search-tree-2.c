@@ -162,7 +162,7 @@ void iterativeInorder(Node* node) // 반복적 중위 순회 스택 함수
  */
 void levelOrder(Node* ptr) // 레벨 순서 트리 순회 함수
 {
-	front = rear = -1;
+	front = rear = -1; // 정수형 변수 front rear 에 -1 대입
 
 	if(!ptr)
 	{
@@ -170,22 +170,22 @@ void levelOrder(Node* ptr) // 레벨 순서 트리 순회 함수
 	}
 	enQueue(ptr);
 
-	for(;;)
+	for(;;) // 반복문 실행
 	{
-		ptr = deQueue();
+		ptr = deQueue(); // 큐에서 dequeue 시작
 		if(ptr)
 		{
-			printf("[%d]", ptr->key);
-			if(ptr -> left)
+			printf("[%d]", ptr->key); // 추출된 노느를 방문한다.
+			if(ptr -> left) // 방문한 노드의 왼쪽 자식이 존재한다면, enQueue 진행
 			{
 				enQueue(ptr -> left);
 			}
-			if(ptr -> right)
+			if(ptr -> right) // 방문한 노드의 오른쪽 자식이 존재한다면, enQueue 진행
 			{
 				enQueue(ptr -> right);
 			}
 		}
-		else break;
+		else break; // 반복문 종료
 	}
 }
 
@@ -313,7 +313,7 @@ int deleteNode(Node* head, int key)
 }
 
 
-void freeNode(Node* ptr)
+void freeNode(Node* ptr) // 재귀함수를 이용하여 노드 초기화
 {
 	if(ptr) {
 		freeNode(ptr->left);
@@ -365,24 +365,24 @@ Node* deQueue()
 {
 	Node* node = NULL;
 
-	if(front == rear)
+	if(front == rear) // front와 rear의 값이 같다면,
 	{
-		return node;
+		return node; // node의 값 반환
 	}
-	front ++;
-	node = queue[front];
-	return node;
+	front ++; // front 값 +1 증가
+	node = queue[front]; // node의 배열 queue[front의 값]값 대입
+	return node; // node 값 리턴
 }
 
 
 void enQueue(Node* aNode)
 {
-	if(rear == MAX_QUEUE_SIZE -1 )
+	if(rear == MAX_QUEUE_SIZE -1 ) // rear의 값이 최대 큐 사이즈 -1값이랑 같으면
 	{
 		return;
 	}
-	rear ++;
-	queue[rear] = aNode;
+	rear ++; // rear 값 +1 증가
+	queue[rear] = aNode; // 배열 queue[rear의값]에 aNode의 값 대입
 }
 
 
