@@ -138,21 +138,19 @@ void recursiveInorder(Node* ptr) // 재귀함수를이용하여 중위순회 출
 /**
  * textbook: p 224s
  */
-void iterativeInorder(Node* node) // 반복적 중위 순회 함수
+void iterativeInorder(Node* node) // 반복적 중위 순회 스택 함수
 {
-	int top= 1;
-	Node stack[MAX_STACK_SIZE];
-	for(;;)
+	for(;;) // 이중 반복문 실행
 	{
 		for(; node; node = node -> left)
 		{
-			push(node);
+			push(node); // 스택에 삽입
 		}
-		node = pop();
+		node = pop(); // 스택에서 삭제
 
-		if(!node) break;
+		if(!node) break; // 공백 스택
 		{
-			printf("%d", node -> key);
+			printf("[%d]", node -> key);
 			node = node -> right;
 		}
 	}
@@ -164,28 +162,27 @@ void iterativeInorder(Node* node) // 반복적 중위 순회 함수
  */
 void levelOrder(Node* ptr) // 레벨 순서 트리 순회 함수
 {
-	int front = rear = 0;
-	Node queue[MAX_QUEUE_SIZE];
+	front = rear = -1;
 
 	if(!ptr)
 	{
 		return;
 	}
-	enQueue(&front, rear);
+	enQueue(ptr);
 
 	for(;;)
 	{
-		ptr = deQueue(&front, rear);
+		ptr = deQueue();
 		if(ptr)
 		{
-			printf("%d", ptr->key);
+			printf("[%d]", ptr->key);
 			if(ptr -> left)
 			{
-				enQueue(front, &rear, ptr -> left);
+				enQueue(ptr -> left);
 			}
 			if(ptr -> right)
 			{
-				addq(front, &rear, ptr -> right);
+				enQueue(ptr -> right);
 			}
 		}
 		else break;
@@ -239,73 +236,68 @@ int insert(Node* head, int key)
 
 int deleteNode(Node* head, int key)
 {
-	Node* parent = NULL;
-	Node* node = head -> left;
-	Node* child;
-	Node* del;
-	Node* del2;
+	Node* parent = NULL; // Node의 포인터형 변수 parent 생성한 뒤, NULL로 초기화
+	Node* node = head -> left; // Node의 포인터형 변수 node 생성한 뒤, 헤더포인터가 가리키는 left 값 대입
+	Node* child; // Node의 포인터형 변수 child 생성
+	Node* del; // Node의 포인터형 변수 del 생성
+	Node* del2; // Node의 포인터형 변수 del2 생성
 
-	if(node == head)
+	if(node == head) // 만일 헤더포인가 가라키는 left의 값이 들어가있는 node가 헤더포인터의 값과 같다면(루트노드가 없다면), 프린트문 출력
 	{
-		printf("키가 존재하지않습니다\n");
+		printf("삭제할 key의 값 노드가 없습니다.\n");
 		return 1;
 	}
 
-	while(node -> key != key)
+	while(node -> key != key) // 삭제하려는 노드 탐색, node -> key의 값이 key의 값과 같을 때까지 반복
 	{
-		parent = node;
+		parent = node; // parent에 node 값 대입
 
-		if(node -> key > key)
+		if(node -> key > key) // node -> key의 값이 key 값보다 클 경우
 		{
-			node = node -> left;
+			node = node -> left; // node에 node -> left 값을 넣어 왼쪽으로 이동
 		}
-		else
+		else // 아니라면 node에 node -> right 값을 넣어 오른쪽으로 이동
 			node = node -> right;
 	}
 
-	if(node -> left == NULL && node -> right == NULL)
+	if(node -> left == NULL && node -> right == NULL) // 단말 노드일 경우
 	{
 		if(parent)
 		{
 			if(parent -> left == node)
 			{
-				parent -> left = NULL;
+				parent -> left = NULL; // parent -> left의 값에 NULL 대입
 			}
 			else
 			{
-				parent -> right = NULL;
+				parent -> right = NULL; // parent -> right의 값에 NULL 대입
 			}
 		}
 		else
-			head -> left = head;
+			head -> left = head; // 헤더포인터가 가리키는 left의 값을 헤더포인터의 값으로 대입
 	}
-	else if (node -> left == NULL || node -> right == NULL)
+	else if (node -> left == NULL || node -> right == NULL) // 하나의 서브트리를 가질 경우
 	{
-		child = (node -> left != NULL) ? node -> left : node -> right;
+		child = (node -> left != NULL) ? node -> left : node -> right; // node -> left의 값이 NULL이 참이면 node -> left의 값 대입, 거짓이면 node -> right 값 대입
 
 		if(parent)
 		{
-			if(parent -> left == node)
-			{
-				parent -> left == child;
-			}
-			else
-			{
-				parent -> right = child;
-			}
+			parent -> right = child; // parent -> right 값에 조건연산자로 인해 대입되엉 있는 child의 값 대입
+
 		}
 	}
-	else
+	else // 두 개의 서브트리를 가질 경우
 	{
-		del2 = node;
-		del = node -> right;
+		/* 삭제하려는 노드의 오른쪽 서브트리에서 제일 작은 값 탐색 */
+		del2 = node; // del2 에 node 값 대입
+		del = node -> right; // del은 node가 가리키는 right의 값
 
 		while(del -> left != NULL)
 		{
 			del2 = del;
 			del = del -> left;
 		}
-		if(del2 -> left == del)
+		if(del2 -> left == del) // 왼쪽 끝까지 왔지만, 마지막 노드의 오른쪾에 자식 노드가 존재 가능하여 조건문 실행
 		{
 			del2 -> left = del -> right;
 		}
@@ -351,20 +343,46 @@ int freeBST(Node* head)
 
 Node* pop()
 {
+	Node* p = NULL; // Node의 포인터 변수 p 를 생성하여 NULL로 초기화
+	if (top >= 0) // top의 값이 0보다 크거나 작을경우,
+	{
+		p = stack[top--]; // stack배열의 top의 값을 감소하여 p에 대입
+	}
+	return p; // p의 값 리턴
 }
 
 void push(Node* aNode)
 {
+	if(top < MAX_STACK_SIZE - 1 && aNode != NULL) // 만약 top이 스택의 사이즈 -1 보다 작고, aNode의 값이 NULL이 아닐 경우
+	{
+		stack[++top] = aNode; // stack배열의 top의 값을 증감시킨 뒤, aNode의 값 대입
+	}
 }
 
 
 
 Node* deQueue()
 {
+	Node* node = NULL;
+
+	if(front == rear)
+	{
+		return node;
+	}
+	front ++;
+	node = queue[front];
+	return node;
 }
+
 
 void enQueue(Node* aNode)
 {
+	if(rear == MAX_QUEUE_SIZE -1 )
+	{
+		return;
+	}
+	rear ++;
+	queue[rear] = aNode;
 }
 
 
